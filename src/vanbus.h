@@ -1,3 +1,5 @@
+#ifndef VANBUS_MAX_SUBSCRIPTIONS 5
+
 enum VanbusMsgType {
   Vb_Byte,
   Vb_Float,
@@ -46,4 +48,26 @@ class VanbusMsg {
     uint8_t field = 0;
     VanbusMessageType type = Vb_Byte;
     uint32_t payload = 0;
+};
+
+typedef void (*callbackFn)(*VanBusMsg);
+
+struct VanbusCallback {
+  uint8_t pathA = 0;
+  uint8_t pathB = 0;
+  uint8_t field = 0;
+  callbackFn callback;
+};
+
+class Vanbus {
+  public:
+    int begin(int pin);
+    int subscribe(callbackFn F, uint8_t A, uint8_t B, uint8_t F=0);
+
+    int update();
+
+  private:
+    VanbusCallback callbacks[VANBUS_MAX_SUBSCRIPTIONS];
+    VanbusMsg msg;
+    PJONSoftwareBitBang bus;
 };
