@@ -1,4 +1,5 @@
 #ifndef VANBUS_MAX_SUBSCRIPTIONS 5
+#define FIXED_POINT_FRACTIONAL_BITS 5
 
 enum VanbusMsgType {
   Vb_Byte,
@@ -20,7 +21,7 @@ class VanbusMsg {
     VanbusMsg();
     VanbusMsg(uint8_t A, uint8_t B, uint8_t F);
 
-    void parseFromBytes(uint8_t *bytes, size_t len);
+    int parseFromBytes(uint8_t *bytes, size_t len);
     int writeBytes(uint8_t *bytes, size_t max);
 
     VanbusMessageType getType( return type; );
@@ -38,7 +39,7 @@ class VanbusMsg {
     void setPathB(uint8_t B) { pathB = B; };
     void setField(uint8_t F) { field = F; };
 
-    void setByte(uint8_t byte) { type = Vb_Byte; payload[0] = byte };
+    void setByte(uint8_t byte) { type = Vb_Byte; payload[0] = byte; length = 5; };
     void setFloat();
     void setShort();
     void setUnsignedShort();
@@ -52,6 +53,7 @@ class VanbusMsg {
     uint8_t field = 0;
     VanbusMessageType type = Vb_Byte;
     uint8_t payload[4] = {0};
+    uint8_t length = 0;
 };
 
 typedef void (*callbackFn)(*VanBusMsg);
