@@ -40,9 +40,9 @@ class VanbusMsg {
     int16_t getShort() { return (int16_t)getUnsignedShort(); };
     uint32_t getUnsignedLong() { 
       uint32_t r = payload[0];
-      r += (uint16_t)payload[1]<<8;
-      r += (uint16_t)payload[2]<<16;
-      r += (uint16_t)payload[3]<<24;
+      r += (uint32_t)payload[1]<<8;
+      r += ((uint32_t)payload[2])<<16;
+      r += ((uint32_t)payload[3])<<24;
       return r;
     };
     int32_t getLong() { return (int32_t)getUnsignedLong(); };
@@ -106,10 +106,10 @@ struct VanbusSub {
 class Vanbus {
   public:
     // subscribe to a topic
-    int subscribe(callbackFn fn, uint8_t A, uint8_t B, uint8_t F=0);
+    int subscribe(callbackFn fn, uint8_t A=0, uint8_t B=0, uint8_t F=0);
 
     // provide a new message for processing, call any registered callbacks
-    int receive(uint8_t bytes, uint8_t len);
+    void receive(uint8_t *bytes, uint8_t len);
 
   private:
     uint8_t n_subs = 0;
