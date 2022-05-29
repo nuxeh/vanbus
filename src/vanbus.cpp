@@ -2,7 +2,7 @@
 
 #include "vanbus.h"
 
-VanbusMsg::VanbusMsg() {}
+VanbusMsg::VanbusMsg() : VanbusMsg(0, 0, 0) {}
 
 VanbusMsg::VanbusMsg(uint8_t A, uint8_t B, uint8_t F) {
   pathA = A;
