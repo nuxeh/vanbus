@@ -1,8 +1,12 @@
+#pragma once
+
+#include <stdint.h>
+
 #ifndef VANBUS_MAX_SUBSCRIPTIONS
 #define VANBUS_MAX_SUBSCRIPTIONS 5
 #endif
 
-typedef uint16_t vb_fixed_t
+typedef uint16_t vb_fixed_t;
 #define FIXED_POINT_FRACTIONAL_BITS 5
 
 enum VanbusMsgType {
@@ -20,14 +24,14 @@ class VanbusMsg {
     VanbusMsg();
     VanbusMsg(uint8_t A, uint8_t B, uint8_t F);
 
-    int parseFromBytes(uint8_t *bytes, size_t len);
-    int writeBytes(uint8_t *bytes, size_t max);
+    int parseFromBytes(uint8_t *bytes, uint8_t len);
+    int writeBytes(uint8_t *bytes, uint8_t max);
 
-    uint8_t getLength() { return length };
-    VanbusMessageType getType( return type; );
-    void setType(VanbusMessageType T) { type = T };
+    uint8_t getLength() { return length; };
+    VanbusMsgType getType() { return type; };
+    void setType(VanbusMsgType T) { type = T; };
 
-    uint8_t getByte() { return payload[0] };
+    uint8_t getByte() { return payload[0]; };
     uint16_t getUnsignedShort() {
       uint16_t r = payload[0];
       r += (uint16_t)payload[1]<<8;
@@ -43,6 +47,10 @@ class VanbusMsg {
     };
     int32_t getLong() { return (int32_t)getUnsignedLong(); };
     float getFloat();
+
+    uint8_t getPathA() { return pathA; };
+    uint8_t getPathB() { return pathB; };
+    uint8_t getField() { return field; };
 
     void setPathA(uint8_t A) { pathA = A; };
     void setPathB(uint8_t B) { pathB = B; };
@@ -68,7 +76,7 @@ class VanbusMsg {
     uint8_t pathA = 0;                // 0
     uint8_t pathB = 0;                // 1
     uint8_t field = 0;                // 2
-    VanbusMessageType type = Vb_Byte; // 3
+    VanbusMsgType type = Vb_Byte; // 3
     uint8_t payload[4] = {0};         // 4..(7)
     uint8_t length = 0;
 };
@@ -86,7 +94,7 @@ class VanbusMsg {
  */
 #define VANBUS_HEADER_LEN 4
 
-typedef void (*callbackFn)(*VanBusMsg);
+typedef void (*callbackFn)(VanbusMsg *);
 
 struct VanbusSub {
   uint8_t pathA = 0;
@@ -98,7 +106,7 @@ struct VanbusSub {
 class Vanbus {
   public:
     // subscribe to a topic
-    int subscribe(callbackFn F, uint8_t A, uint8_t B, uint8_t F=0);
+    int subscribe(callbackFn fn, uint8_t A, uint8_t B, uint8_t F=0);
 
     // provide a new message for processing, call any registered callbacks
     int receive(uint8_t bytes, uint8_t len);

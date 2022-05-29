@@ -8,8 +8,7 @@ VanbusMsg::VanbusMsg(uint8_t A, uint8_t B, uint8_t F) {
   pathA = A;
   pathB = B;
   field = F;
-  type = T;
-  payload = P;
+  type = Vb_Byte;
 }
 
 float fixed_to_float(vb_fixed_t input) {
@@ -20,7 +19,7 @@ vb_fixed_t float_to_fixed(float input) {
   return (vb_fixed_t)(round(input * (1 << FIXED_POINT_FRACTIONAL_BITS)));
 }
 
-int VanbusMsg::parseFromBytes(uint8_t *bytes, size_t len) {
+int VanbusMsg::parseFromBytes(uint8_t *bytes, uint8_t len) {
   if (len >= 5) {
     pathA = bytes[0];
     pathB = bytes[1];
@@ -35,7 +34,7 @@ int VanbusMsg::parseFromBytes(uint8_t *bytes, size_t len) {
   }
 }
 
-int VanbusMsg::writeBytes(uint8_t *bytes, size_t max) {
+int VanbusMsg::writeBytes(uint8_t *bytes, uint8_t max) {
   bytes[0] = pathA;
   bytes[1] = pathB;
   bytes[2] = field;
@@ -48,20 +47,23 @@ int VanbusMsg::writeBytes(uint8_t *bytes, size_t max) {
 }
 
 void VanbusMsg::set(float F) {
-  type = F < 0 ? Vb_Fixed_Neg : Vb_Fixed;
-  set(float_to_fixed(abs(F));
-  length = VANBUS_HEADER_LEN + sizeof(fixed_t);
+  type = (F < 0) ? Vb_Fixed_Neg : Vb_Fixed;
+  set(float_to_fixed(fabs(F)));
+  length = VANBUS_HEADER_LEN + sizeof(vb_fixed_t);
 }
 
 float VanbusMsg::getFloat() {
+  if (!(type == Vb_Fixed || type == Vb_Fixed_Neg)) return 0.0;
+
   vb_fixed_t r = payload[0];
   for (uint8_t i=1; i<sizeof(vb_fixed_t); i++) {
     r += payload[i];
   }
-  return fixed_to_float(r);
+
+  return (type == Vb_Fixed_Neg) ? -1.0 * fixed_to_float(r) : fixed_to_float(r);
 }
 
-int Vanbus::subscribe(callbackFn F, uint8_t A, uint8_t B, uint8_t F=0) {
+int Vanbus::subscribe(callbackFn fn, uint8_t A, uint8_t B, uint8_t F=0) {
   if (n_subs < VANBUS_MAX_SUBSCRIPTIONS) {
     subs[n_subs].pathA = A;
     subs[n_subs].pathB = B;
@@ -79,9 +81,9 @@ int Vanbus::receive(uint8_t bytes, uint8_t len) {
 
   // check all subs
   for (uint8_t s=0; s<n_subs; s++) {
-    if (subs[s].pathA != 0 && subs[s].pathA != msg.pathA) continue;
-    if (subs[s].pathB != 0 && subs[s].pathB != msg.pathB) continue;
-    if (subs[s].field != 0 && subs[s].field != msg.field) continue;
+    if (subs[s].pathA != 0 && subs[s].pathA != msg.getPathA()) continue;
+    if (subs[s].pathB != 0 && subs[s].pathB != msg.getPathB()) continue;
+    if (subs[s].field != 0 && subs[s].field != msg.getField()) continue;
 
     // subscription matches, call callback
     subs[s].fn(&msg);
