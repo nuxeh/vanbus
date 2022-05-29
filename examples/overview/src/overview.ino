@@ -10,6 +10,7 @@ void setup() {
   read_write_ushort();
   read_write_ulong();
   read_write_float();
+  read_write_neg_float();
 }
 
 void read_write_byte() {
@@ -129,7 +130,37 @@ void read_write_float() {
   Serial.print("Parsed from buffer, read bytes: ");
   Serial.println(read_bytes);
   Serial.print("Read value: ");
-  Serial.println(msg2.getFloat());
+  Serial.println(msg2.getFloat(), 10);
+}
+
+void read_write_neg_float() {
+  uint8_t buf[8];
+
+  VanbusMsg msg;
+  float foo = -1.23456789;
+  msg.set(foo);
+
+  Serial.print("Set -1.248248, length: ");
+  Serial.println(msg.len());
+
+  uint8_t written = msg.writeBytes(buf, 8);
+
+  Serial.print("Wrote to buffer, length: ");
+  Serial.println(written);
+
+  Serial.print("Message type: ");
+  Serial.println(msg.getType());
+
+  VanbusMsg msg2;
+  int read_bytes = msg2.parseFromBytes(buf, written);
+
+  Serial.print("Parsed message type: ");
+  Serial.println(msg2.getType());
+
+  Serial.print("Parsed from buffer, read bytes: ");
+  Serial.println(read_bytes);
+  Serial.print("Read value: ");
+  Serial.println(msg2.getFloat(), 10);
 }
 
 void loop() {}
