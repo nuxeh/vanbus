@@ -22,8 +22,8 @@ enum VanbusMsgType {
 class VanbusMsg {
   public:
     VanbusMsg();
-    VanbusMsg(uint8_t A, uint8_t B, uint8_t F);
-
+    VanbusMsg(uint8_t A, uint8_t B=0, uint8_t F=0);
+asda
     int parseFromBytes(uint8_t *bytes, uint8_t len);
     int writeBytes(uint8_t *bytes, uint8_t max);
 
