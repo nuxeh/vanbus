@@ -10,7 +10,7 @@ typedef uint16_t vb_fixed_t;
 #define FIXED_POINT_FRACTIONAL_BITS 5
 
 enum VanbusMsgType {
-  Vb_Byte,
+  Vb_Byte = 0,
   Vb_Short,
   Vb_UShort,
   Vb_Long,

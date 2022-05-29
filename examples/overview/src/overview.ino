@@ -24,11 +24,17 @@ void read_write_byte() {
 
   uint8_t written = msg.writeBytes(buf, 8);
 
+  Serial.print("Message type: ");
+  Serial.println(msg.getType());
+
   Serial.print("Wrote to buffer, length: ");
   Serial.println(written);
 
   VanbusMsg msg2;
   int read_bytes = msg2.parseFromBytes(buf, written);
+
+  Serial.print("Parsed message type: ");
+  Serial.println(msg2.getType());
 
   Serial.print("Parsed from buffer, read bytes: ");
   Serial.println(read_bytes);
@@ -48,11 +54,17 @@ void read_write_ushort() {
 
   uint8_t written = msg.writeBytes(buf, 8);
 
+  Serial.print("Message type: ");
+  Serial.println(msg.getType());
+
   Serial.print("Wrote to buffer, length: ");
   Serial.println(written);
 
   VanbusMsg msg2;
   int read_bytes = msg2.parseFromBytes(buf, written);
+
+  Serial.print("Parsed message type: ");
+  Serial.println(msg2.getType());
 
   Serial.print("Parsed from buffer, read bytes: ");
   Serial.println(read_bytes);
@@ -75,8 +87,14 @@ void read_write_ulong() {
   Serial.print("Wrote to buffer, length: ");
   Serial.println(written);
 
+  Serial.print("Message type: ");
+  Serial.println(msg.getType());
+
   VanbusMsg msg2;
   int read_bytes = msg2.parseFromBytes(buf, written);
+
+  Serial.print("Parsed message type: ");
+  Serial.println(msg2.getType());
 
   Serial.print("Parsed from buffer, read bytes: ");
   Serial.println(read_bytes);
@@ -99,8 +117,14 @@ void read_write_float() {
   Serial.print("Wrote to buffer, length: ");
   Serial.println(written);
 
+  Serial.print("Message type: ");
+  Serial.println(msg.getType());
+
   VanbusMsg msg2;
   int read_bytes = msg2.parseFromBytes(buf, written);
+
+  Serial.print("Parsed message type: ");
+  Serial.println(msg2.getType());
 
   Serial.print("Parsed from buffer, read bytes: ");
   Serial.println(read_bytes);
