@@ -16,7 +16,7 @@ float fixed_to_float(vb_fixed_t input) {
 }
 
 vb_fixed_t float_to_fixed(float input) {
-  return (vb_fixed_t)(round(input * (1 << FIXED_POINT_FRACTIONAL_BITS)));
+  return (vb_fixed_t)(round(input * (1UL << FIXED_POINT_FRACTIONAL_BITS)));
 }
 
 uint8_t get_length_for_type() {

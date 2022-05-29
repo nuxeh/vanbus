@@ -6,8 +6,8 @@
 #define VANBUS_MAX_SUBSCRIPTIONS 5
 #endif
 
-typedef uint16_t vb_fixed_t;
-#define FIXED_POINT_FRACTIONAL_BITS 8
+typedef uint32_t vb_fixed_t;
+#define FIXED_POINT_FRACTIONAL_BITS 12
 
 enum VanbusMsgType {
   Vb_Byte = 0,
