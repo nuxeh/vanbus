@@ -10,4 +10,12 @@ void loop() {
   VanbusMsg msg;
   msg.set(0xA2);
 
+  Serial.print("Set 0xA2, length: ");
+  Serial.println(msg.len());
+
+  uint8_t written = msg.writeBytes(buf, 8);
+
+  Serial.print("Wrote to buffer, length: ");
+  Serial.println(written);
+
 }

@@ -27,7 +27,8 @@ class VanbusMsg {
     int parseFromBytes(uint8_t *bytes, uint8_t len);
     int writeBytes(uint8_t *bytes, uint8_t max);
 
-    uint8_t getLength() { return length; };
+    uint8_t len() { return length; };
+
     VanbusMsgType getType() { return type; };
     void setType(VanbusMsgType T) { type = T; };
 
