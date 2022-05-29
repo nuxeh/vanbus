@@ -12,12 +12,12 @@ VanbusMsg::VanbusMsg(uint8_t A, uint8_t B, uint8_t F) {
   payload = P;
 }
 
-float fixed_to_float(uint16_t input) {
+float fixed_to_float(vb_fixed_t input) {
   return ((float)input / (float)(1 << FIXED_POINT_FRACTIONAL_BITS));
 }
 
-uint16_t float_to_fixed(float input) {
-  return (uint16_t)(round(input * (1 << FIXED_POINT_FRACTIONAL_BITS)));
+vb_fixed_t float_to_fixed(float input) {
+  return (vb_fixed_t)(round(input * (1 << FIXED_POINT_FRACTIONAL_BITS)));
 }
 
 int VanbusMsg::parseFromBytes(uint8_t *bytes, size_t len) {
@@ -45,6 +45,12 @@ int VanbusMsg::writeBytes(uint8_t *bytes, size_t max) {
     bytes[i+VANBUS_HEADER_LEN] = payload[i];
   }
   return 0;
+}
+
+void VanbusMsg::set(float F) {
+  sign = (F < 0); 
+  set(float_to_fixed(abs(F));
+  length = sizeof(fixed_t) + VANBUS_HEADER_LEN + 1;
 }
 
 int Vanbus::subscribe(callbackFn F, uint8_t A, uint8_t B, uint8_t F=0) {

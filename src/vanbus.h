@@ -2,6 +2,7 @@
 #define VANBUS_MAX_SUBSCRIPTIONS 5
 #endif
 
+typedef uint16_t vb_fixed_t
 #define FIXED_POINT_FRACTIONAL_BITS 5
 
 enum VanbusMsgType {
@@ -27,8 +28,12 @@ class VanbusMsg {
 
     uint8_t getByte() { return payload[0] };
     float getFloat();
-    int16_t getShort();
-    uint16_t getUnsignedShort();
+    int16_t getShort() { return (int16_t)getUnsignedShort(); };
+    uint16_t getUnsignedShort() {
+      uint16_t r = payload[0];
+      r += (uint16_t)payload[1]<<8;
+      return r;
+    };
     int32_t getLong();
     uint32_t getUnsignedLong();
     VanbusFixedPointNum getFixedPoint();
@@ -38,8 +43,8 @@ class VanbusMsg {
     void setField(uint8_t F) { field = F; };
 
     void set(uint8_t b) { type = Vb_Byte; payload[0] = b; length = 5; };
-    void set(uint16_t b) {
-      type = Vb_UShort; payload[0] = b; payload[1] = b>>8; length = 6;
+    void set(uint16_t s) {
+      type = Vb_UShort; payload[0] = s; payload[1] = s>>8; length = 6;
     };
     void set(uint32_t b) {
       type = Vb_ULong;
@@ -49,6 +54,9 @@ class VanbusMsg {
       payload[3] = b>>24;
       length = 8;
     };
+    void set(int16_t s) { set((uint16_t)s); type = Vb_Short; };
+    void set(int32_t s) { set((uint32_t)s); type = Vb_Long; };
+    void set(float f);
 
   private:
     uint8_t pathA = 0;                // 0
@@ -56,13 +64,21 @@ class VanbusMsg {
     uint8_t field = 0;                // 2
     VanbusMessageType type = Vb_Byte; // 3
     uint8_t payload[4] = {0};         // 4..(7)
+    bool sign = false;
     uint8_t length = 0;
 };
 
-/*   0   1   2   3   4   5   6   7
- * +---+---+---+---+---+---+---+---+
- * | A | B | F | T |    Payload    |
- * +---+---+---+---+---+---+---+---+
+/*   0   1   2   3   4..n            n
+ * +---+---+---+---+---+---+---+---+---+
+ * | A | B | F | T |    Payload    | S |
+ * +---+---+---+---+---+---+---+---+---+
+ *
+ * A - path element A
+ * B - path element B
+ * F - field
+ * T - type
+ * Payload - up to 4 bytes payload
+ * S - (optional) sign
  */
 #define VANBUS_HEADER_LEN 4
 
