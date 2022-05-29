@@ -7,11 +7,12 @@ typedef uint16_t vb_fixed_t
 
 enum VanbusMsgType {
   Vb_Byte,
-  Vb_Float,
   Vb_Short,
   Vb_UShort,
   Vb_Long,
   Vb_ULong,
+  Vb_Fixed,
+  Vb_Fixed_Neg,
 };
 
 class VanbusMsg {
@@ -27,16 +28,21 @@ class VanbusMsg {
     void setType(VanbusMessageType T) { type = T };
 
     uint8_t getByte() { return payload[0] };
-    float getFloat();
-    int16_t getShort() { return (int16_t)getUnsignedShort(); };
     uint16_t getUnsignedShort() {
       uint16_t r = payload[0];
       r += (uint16_t)payload[1]<<8;
       return r;
     };
-    int32_t getLong();
-    uint32_t getUnsignedLong();
-    VanbusFixedPointNum getFixedPoint();
+    int16_t getShort() { return (int16_t)getUnsignedShort(); };
+    uint32_t getUnsignedLong() { 
+      uint32_t r = payload[0];
+      r += (uint16_t)payload[1]<<8;
+      r += (uint16_t)payload[2]<<16;
+      r += (uint16_t)payload[3]<<24;
+      return r;
+    };
+    int32_t getLong() { return (int32_t)getUnsignedLong(); };
+    float getFloat();
 
     void setPathA(uint8_t A) { pathA = A; };
     void setPathB(uint8_t B) { pathB = B; };
@@ -64,21 +70,19 @@ class VanbusMsg {
     uint8_t field = 0;                // 2
     VanbusMessageType type = Vb_Byte; // 3
     uint8_t payload[4] = {0};         // 4..(7)
-    bool sign = false;
     uint8_t length = 0;
 };
 
-/*   0   1   2   3   4..n            n
- * +---+---+---+---+---+---+---+---+---+
- * | A | B | F | T |    Payload    | S |
- * +---+---+---+---+---+---+---+---+---+
+/*   0   1   2   3   4..n
+ * +---+---+---+---+---+---+---+---+
+ * | A | B | F | T |    Payload    |
+ * +---+---+---+---+---+---+---+---+
  *
  * A - path element A
  * B - path element B
  * F - field
  * T - type
  * Payload - up to 4 bytes payload
- * S - (optional) sign
  */
 #define VANBUS_HEADER_LEN 4
 

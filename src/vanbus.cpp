@@ -48,9 +48,17 @@ int VanbusMsg::writeBytes(uint8_t *bytes, size_t max) {
 }
 
 void VanbusMsg::set(float F) {
-  sign = (F < 0); 
+  type = F < 0 ? Vb_Fixed_Neg : Vb_Fixed;
   set(float_to_fixed(abs(F));
-  length = sizeof(fixed_t) + VANBUS_HEADER_LEN + 1;
+  length = VANBUS_HEADER_LEN + sizeof(fixed_t);
+}
+
+float VanbusMsg::getFloat() {
+  vb_fixed_t r = payload[0];
+  for (uint8_t i=1; i<sizeof(vb_fixed_t); i++) {
+    r += payload[i];
+  }
+  return fixed_to_float(r);
 }
 
 int Vanbus::subscribe(callbackFn F, uint8_t A, uint8_t B, uint8_t F=0) {
