@@ -1,7 +1,5 @@
 #include <vanbus.h>
 
-Vanbus vanbus();
-
 void setup() {
   Serial.begin(115200);
 

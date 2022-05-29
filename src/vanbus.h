@@ -23,7 +23,7 @@ class VanbusMsg {
   public:
     VanbusMsg();
     VanbusMsg(uint8_t A, uint8_t B=0, uint8_t F=0);
-asda
+
     int parseFromBytes(uint8_t *bytes, uint8_t len);
     int writeBytes(uint8_t *bytes, uint8_t max);
 
@@ -51,11 +51,11 @@ asda
 
     uint8_t getPathA() { return pathA; };
     uint8_t getPathB() { return pathB; };
-    uint8_t getField() { return field; };
+    uint8_t getPathC() { return pathC; };
 
     void setPathA(uint8_t A) { pathA = A; };
     void setPathB(uint8_t B) { pathB = B; };
-    void setField(uint8_t F) { field = F; };
+    void setPathC(uint8_t F) { pathC = F; };
 
     void set(uint8_t b) { type = Vb_Byte; payload[0] = b; length = 5; };
     void set(uint16_t s) {
@@ -74,11 +74,11 @@ asda
     void set(float f);
 
   private:
-    uint8_t pathA = 0;                // 0
-    uint8_t pathB = 0;                // 1
-    uint8_t field = 0;                // 2
+    uint8_t pathA = 0;            // 0
+    uint8_t pathB = 0;            // 1
+    uint8_t pathC = 0;            // 2
     VanbusMsgType type = Vb_Byte; // 3
-    uint8_t payload[4] = {0};         // 4..(7)
+    uint8_t payload[4] = {0};     // 4..(7)
     uint8_t length = 0;
 };
 
@@ -89,7 +89,7 @@ asda
  *
  * A - path element A
  * B - path element B
- * F - field
+ * F - pathC
  * T - type
  * Payload - up to 4 bytes payload
  */
@@ -100,10 +100,11 @@ typedef void (*callbackFn)(VanbusMsg *);
 struct VanbusSub {
   uint8_t pathA = 0;
   uint8_t pathB = 0;
-  uint8_t field = 0;
+  uint8_t pathC = 0;
   callbackFn fn;
 };
 
+template <int N>
 class Vanbus {
   public:
     // subscribe to a topic
@@ -114,6 +115,35 @@ class Vanbus {
 
   private:
     uint8_t n_subs = 0;
-    VanbusSub subs[VANBUS_MAX_SUBSCRIPTIONS];
+    VanbusSub subs[N];
     VanbusMsg msg;
 };
+
+template <int N>
+int Vanbus<N>::subscribe(callbackFn fn, uint8_t A, uint8_t B, uint8_t C) {
+  if (n_subs < VANBUS_MAX_SUBSCRIPTIONS) {
+    subs[n_subs].pathA = A;
+    subs[n_subs].pathB = B;
+    subs[n_subs].pathC = C;
+    subs[n_subs].fn = fn;
+    n_subs++;
+    return 0;
+  } else {
+    return -1;
+  }
+}
+
+template <int N>
+void Vanbus<N>::receive(uint8_t *bytes, uint8_t len) {
+  msg.parseFromBytes(bytes, len);
+
+  // check all subs
+  for (uint8_t s=0; s<n_subs; s++) {
+    if (subs[s].pathA != 0 && subs[s].pathA != msg.getPathA()) continue;
+    if (subs[s].pathB != 0 && subs[s].pathB != msg.getPathB()) continue;
+    if (subs[s].pathC != 0 && subs[s].pathC != msg.getPathC()) continue;
+
+    // subscription matches, call callback
+    subs[s].fn(&msg);
+  }
+}
