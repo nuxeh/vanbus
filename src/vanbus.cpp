@@ -41,11 +41,13 @@ int VanbusMsg::writeBytes(uint8_t *bytes, uint8_t max) {
   bytes[1] = pathB;
   bytes[2] = field;
   type = (VanbusMsgType)bytes[3];
+  int written = VANBUS_HEADER_LEN;
   for (uint8_t i=0; i<(length-VANBUS_HEADER_LEN); i++) {
     if ((i+VANBUS_HEADER_LEN) >= max) return -1;
     bytes[i+VANBUS_HEADER_LEN] = payload[i];
+    written++;
   }
-  return 0;
+  return written;
 }
 
 void VanbusMsg::set(float F) {

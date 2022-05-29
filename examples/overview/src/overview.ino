@@ -28,8 +28,8 @@ void read_write_byte() {
 
   Serial.print("Parsed from buffer, read bytes: ");
   Serial.println(read_bytes);
-  Serial.print("Read value: ");
-  Serial.println(msg2.getByte());
+  Serial.print("Read value: 0x");
+  Serial.println(msg2.getByte(), HEX);
 }
 
 void loop() {}
