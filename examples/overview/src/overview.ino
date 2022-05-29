@@ -2,9 +2,14 @@
 
 Vanbus vanbus();
 
-void setup() {}
+void setup() {
+  Serial.begin(115200);
 
-void loop() {
+  // tests
+  read_write_byte();
+}
+
+void read_write_byte() {
   uint8_t buf[8];
 
   VanbusMsg msg;
@@ -18,4 +23,13 @@ void loop() {
   Serial.print("Wrote to buffer, length: ");
   Serial.println(written);
 
+  VanbusMsg msg2;
+  int read_bytes = msg2.parseFromBytes(buf, written);
+
+  Serial.print("Parsed from buffer, read bytes: ");
+  Serial.println(read_bytes);
+  Serial.print("Read value: ");
+  Serial.println(msg2.getByte());
 }
+
+void loop() {}

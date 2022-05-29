@@ -25,10 +25,12 @@ int VanbusMsg::parseFromBytes(uint8_t *bytes, uint8_t len) {
     pathB = bytes[1];
     field = bytes[2];
     type = (VanbusMsgType)bytes[3];
+    int read = VANBUS_HEADER_LEN;
     for (uint8_t i=0; (i+VANBUS_HEADER_LEN)<len; i++) {
       payload[i] = bytes[i+VANBUS_HEADER_LEN];
+      read++;
     }
-    return 0;
+    return read;
   } else {
     return -1;
   }
