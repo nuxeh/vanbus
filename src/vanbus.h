@@ -1,4 +1,7 @@
-#ifndef VANBUS_MAX_SUBSCRIPTIONS 5
+#ifndef VANBUS_MAX_SUBSCRIPTIONS
+#define VANBUS_MAX_SUBSCRIPTIONS 5
+#endif
+
 #define FIXED_POINT_FRACTIONAL_BITS 5
 
 enum VanbusMsgType {
@@ -8,12 +11,6 @@ enum VanbusMsgType {
   Vb_UShort,
   Vb_Long,
   Vb_ULong,
-  Vb_Fixed,
-};
-
-class VanbusFixedPointNum {
-  uint16_t value;
-  uint16_t divisor;
 };
 
 class VanbusMsg {
@@ -24,6 +21,7 @@ class VanbusMsg {
     int parseFromBytes(uint8_t *bytes, size_t len);
     int writeBytes(uint8_t *bytes, size_t max);
 
+    uint8_t getLength() { return length };
     VanbusMessageType getType( return type; );
     void setType(VanbusMessageType T) { type = T };
 
@@ -39,22 +37,34 @@ class VanbusMsg {
     void setPathB(uint8_t B) { pathB = B; };
     void setField(uint8_t F) { field = F; };
 
-    void setByte(uint8_t byte) { type = Vb_Byte; payload[0] = byte; length = 5; };
-    void setFloat();
-    void setShort();
-    void setUnsignedShort();
-    void setLong();
-    void setUnsignedLong();
-    void setFixedPoint();
+    void set(uint8_t b) { type = Vb_Byte; payload[0] = b; length = 5; };
+    void set(uint16_t b) {
+      type = Vb_UShort; payload[0] = b; payload[1] = b>>8; length = 6;
+    };
+    void set(uint32_t b) {
+      type = Vb_ULong;
+      payload[0] = b;
+      payload[1] = b>>8;
+      payload[2] = b>>16;
+      payload[3] = b>>24;
+      length = 8;
+    };
 
   private:
-    uint8_t pathA = 0;
-    uint8_t pathB = 0;
-    uint8_t field = 0;
-    VanbusMessageType type = Vb_Byte;
-    uint8_t payload[4] = {0};
+    uint8_t pathA = 0;                // 0
+    uint8_t pathB = 0;                // 1
+    uint8_t field = 0;                // 2
+    VanbusMessageType type = Vb_Byte; // 3
+    uint8_t payload[4] = {0};         // 4..(7)
     uint8_t length = 0;
 };
+
+/*   0   1   2   3   4   5   6   7
+ * +---+---+---+---+---+---+---+---+
+ * | A | B | F | T |    Payload    |
+ * +---+---+---+---+---+---+---+---+
+ */
+#define VANBUS_HEADER_LEN 4
 
 typedef void (*callbackFn)(*VanBusMsg);
 

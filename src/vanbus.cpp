@@ -26,8 +26,8 @@ int VanbusMsg::parseFromBytes(uint8_t *bytes, size_t len) {
     pathB = bytes[1];
     field = bytes[2];
     type = (VanbusMsgType)bytes[3];
-    for (uint8_t i=0; i<4; i++) {
-      payload[i] = bytes[i + 4];
+    for (uint8_t i=0; (i+VANBUS_HEADER_LEN)<len; i++) {
+      payload[i] = bytes[i+VANBUS_HEADER_LEN];
     }
     return 0;
   } else {
@@ -40,8 +40,9 @@ int VanbusMsg::writeBytes(uint8_t *bytes, size_t max) {
   bytes[1] = pathB;
   bytes[2] = field;
   type = (VanbusMsgType)bytes[3];
-  for (uint8_t i=0; i<4; i++) {
-    bytes[i + 4] = payload[i];
+  for (uint8_t i=0; i<(length-VANBUS_HEADER_LEN); i++) {
+    if ((i+VANBUS_HEADER_LEN) >= max) return -1;
+    bytes[i+VANBUS_HEADER_LEN] = payload[i];
   }
   return 0;
 }
@@ -61,4 +62,14 @@ int Vanbus::subscribe(callbackFn F, uint8_t A, uint8_t B, uint8_t F=0) {
 
 int Vanbus::receive(uint8_t bytes, uint8_t len) {
   msg.parseFromBytes(bytes, len);
+
+  // check all subs
+  for (uint8_t s=0; s<n_subs; s++) {
+    if (subs[s].pathA != 0 && subs[s].pathA != msg.pathA) continue;
+    if (subs[s].pathB != 0 && subs[s].pathB != msg.pathB) continue;
+    if (subs[s].field != 0 && subs[s].field != msg.field) continue;
+
+    // subscription matches, call callback
+    subs[s].fn(&msg);
+  }
 }
