@@ -21,7 +21,7 @@ uint16_t float_to_fixed(float input) {
 }
 
 int VanbusMsg::parseFromBytes(uint8_t *bytes, size_t len) {
-  if (len >= 8) {
+  if (len >= 5) {
     pathA = bytes[0];
     pathB = bytes[1];
     field = bytes[2];
