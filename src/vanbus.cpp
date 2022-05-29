@@ -51,7 +51,7 @@ int VanbusMsg::writeBytes(uint8_t *bytes, uint8_t max) {
 }
 
 void VanbusMsg::set(float F) {
-  type = (F < 0) ? Vb_Fixed_Neg : Vb_Fixed;
+  type = (F < 0.0) ? Vb_Fixed_Neg : Vb_Fixed;
   set(float_to_fixed(fabs(F)));
   length = VANBUS_HEADER_LEN + sizeof(vb_fixed_t);
 }
