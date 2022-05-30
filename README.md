@@ -31,32 +31,36 @@ and generally packetised/framed transport protocols.
 A device can subscribe to a topic/path, and dispatches callback functions on
 processing of relevant packets for further processing.
 
-    Vanbus<2> vanbus; // template parameter is the number of callbacks to
-                      // assign memory for
+```c++
+Vanbus<2> vanbus; // template parameter is the number of callbacks to
+                  // assign memory for
 
-    void l_c_b(VanbusMsg *m) {
-      Serial.print(F("Ceiling light brightness change: "));
-      Serial.println(m->getByte());
-    }
-    
-    void l_c_s(VanbusMsg *m) {
-      Serial.print(F("Ceiling light state change: "));
-      Serial.println(m->getByte()); // bool type?
-    }
-    
-    void setup() {    
-      vanbus.subscribe(l_c_b, 'l', 'c', 'b');
-      vanbus.subscribe(l_c_s, 'l', 'c', 's');
-    }
-    
+void l_c_b(VanbusMsg *m) {
+  Serial.print(F("Ceiling light brightness change: "));
+  Serial.println(m->getByte());
+}
+
+void l_c_s(VanbusMsg *m) {
+  Serial.print(F("Ceiling light state change: "));
+  Serial.println(m->getByte()); // bool type?
+}
+
+void setup() {
+  vanbus.subscribe(l_c_b, 'l', 'c', 'b');
+  vanbus.subscribe(l_c_s, 'l', 'c', 's');
+}
+```
+
 Messages can be sent to paths which include a wildcard, 0x00, e.g. to send the
 same message to all devices in the same group.
 
-    uint8_t buf[8];
-    
-    // send all lights brightness 90 message
-    msg.path('l', 0x00, 'b');
-    msg.set(0x5A);
-    msg.writeBytes(buf, 8);
-    
-    vanbus.receive(buf, 8);
+```c++
+uint8_t buf[8];
+
+// send all lights brightness 90 message
+msg.path('l', 0x00, 'b');
+msg.set(0x5A);
+msg.writeBytes(buf, 8);
+
+vanbus.receive(buf, 8);
+```
