@@ -17,6 +17,14 @@ enum VanbusMsgType {
   Vb_ULong,
   Vb_Fixed,
   Vb_Fixed_Neg,
+  Vb_Float,
+};
+
+union vb_payload_t {
+   uint8_t b[4];
+   uint16_t us[2];
+   uint32_t ul;
+   float f;
 };
 
 class VanbusMsg {

@@ -1,6 +1,6 @@
 #include <vanbus.h>
 
-Vanbus<7> vanbus;
+Vanbus<8> vanbus;
 
 // ceiling light callbacks
 void l_c_b(VanbusMsg *m) {
@@ -83,6 +83,18 @@ void setup() {
 
   Serial.println(F("[ Side light brightness 127 ]"));
   msg.path('l', 's', 'b');
+  msg.set(0x7F);
+  msg.writeBytes(buf, 8);
+  vanbus.receive(buf, 8);
+
+  Serial.println(F("[ Door light on ]"));
+  msg.path('l', 'd', 's');
+  msg.set(0x01);
+  msg.writeBytes(buf, 8);
+  vanbus.receive(buf, 8);
+
+  Serial.println(F("[ Door light brightness 127 ]"));
+  msg.path('l', 'd', 'b');
   msg.set(0x7F);
   msg.writeBytes(buf, 8);
   vanbus.receive(buf, 8);
