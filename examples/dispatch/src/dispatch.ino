@@ -1,7 +1,7 @@
 #define VANBUS_MAX_SUBSCRIPTIONS 6
 #include <vanbus.h>
 
-Vanbus<6> vanbus;
+Vanbus<7> vanbus;
 
 void a_b_c(VanbusMsg *m) {
   Serial.println(F("> Function a/b/c called"));
@@ -9,6 +9,10 @@ void a_b_c(VanbusMsg *m) {
 
 void a_b_d(VanbusMsg *m) {
   Serial.println(F("> Function a/b/d called"));
+}
+
+void a_a(VanbusMsg *m) {
+  Serial.println(F("> Function a/a/* called"));
 }
 
 void a_b(VanbusMsg *m) {
@@ -32,6 +36,7 @@ void setup() {
 
   vanbus.subscribe(a_b_c, 'a', 'b', 'c');
   vanbus.subscribe(a_b_d, 'a', 'b', 'd');
+  vanbus.subscribe(a_a, 'a', 'a');
   vanbus.subscribe(a_b, 'a', 'b');
   vanbus.subscribe(a, 'a');
   vanbus.subscribe(b, 0, 'b');
