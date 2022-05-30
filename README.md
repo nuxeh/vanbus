@@ -13,6 +13,7 @@ The `c` path element is intended to be a field.
 
 Message payloads are typed, and can be:
 
+- Boolean
 - Byte
 - Float (32 bit IEEE 754)
 - Short
@@ -42,7 +43,7 @@ void l_c_b(VanbusMsg *m) {
 
 void l_c_s(VanbusMsg *m) {
   Serial.print(F("Ceiling light state change: "));
-  Serial.println(m->getByte()); // bool type?
+  Serial.println(m->getBit());
 }
 
 void setup() {

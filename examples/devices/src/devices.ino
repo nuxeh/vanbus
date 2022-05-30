@@ -10,7 +10,7 @@ void l_c_b(VanbusMsg *m) {
 
 void l_c_s(VanbusMsg *m) {
   Serial.print(F("> Ceiling light state change: "));
-  Serial.println(m->getByte()); // bool type?
+  Serial.println(m->getBit());
 }
 
 // side light callbacks
@@ -21,7 +21,7 @@ void l_s_b(VanbusMsg *m) {
 
 void l_s_s(VanbusMsg *m) {
   Serial.print(F("> Side light state change: "));
-  Serial.println(m->getByte()); // bool type?
+  Serial.println(m->getBit());
 }
 
 void l_s_t(VanbusMsg *m) {
@@ -37,7 +37,7 @@ void l_d_b(VanbusMsg *m) {
 
 void l_d_s(VanbusMsg *m) {
   Serial.print(F("> Door light state change: "));
-  Serial.println(m->getByte()); // bool type?
+  Serial.println(m->getBit());
 }
 
 
@@ -65,7 +65,13 @@ void setup() {
 
   Serial.println(F("[ Ceiling light on ]"));
   msg.path('l', 'c', 's');
-  msg.set(0x01);
+  msg.set(true);
+  msg.writeBytes(buf, 8);
+  vanbus.receive(buf, 8);
+
+  Serial.println(F("[ Ceiling light off ]"));
+  msg.path('l', 'c', 's');
+  msg.set(false);
   msg.writeBytes(buf, 8);
   vanbus.receive(buf, 8);
 
@@ -77,7 +83,7 @@ void setup() {
 
   Serial.println(F("[ Side light on ]"));
   msg.path('l', 's', 's');
-  msg.set(0x01);
+  msg.set(true);
   msg.writeBytes(buf, 8);
   vanbus.receive(buf, 8);
 
@@ -89,7 +95,7 @@ void setup() {
 
   Serial.println(F("[ Door light on ]"));
   msg.path('l', 'd', 's');
-  msg.set(0x01);
+  msg.set(true);
   msg.writeBytes(buf, 8);
   vanbus.receive(buf, 8);
 

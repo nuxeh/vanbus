@@ -9,6 +9,8 @@ enum VanbusMsgType {
   Vb_UShort,
   Vb_Long,
   Vb_ULong,
+  Vb_Bool_True,
+  Vb_Bool_False,
 };
 
 /*   0   1   2   3   4..n
@@ -43,6 +45,7 @@ class VanbusMsg {
       pathC = C;
     };
 
+    bool getBit() { return type == Vb_Bool_True; };
     uint8_t getByte() { return payload[0]; };
     uint16_t getUnsignedShort() {
       uint16_t r = payload[0];
@@ -60,6 +63,7 @@ class VanbusMsg {
     int32_t getLong() { return (int32_t)getUnsignedLong(); };
     float getFloat();
 
+    void set(bool b) {type = b ? Vb_Bool_True : Vb_Bool_False; length = VANBUS_HEADER_LEN; };
     void set(uint8_t b) { type = Vb_Byte; payload[0] = b; length = VANBUS_HEADER_LEN + 1; };
     void set(uint16_t s) {
       type = Vb_UShort; payload[0] = s; payload[1] = s>>8; length = VANBUS_HEADER_LEN + 2;
