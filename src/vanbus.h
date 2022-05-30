@@ -17,12 +17,12 @@ enum VanbusMsgType {
 
 /*   0   1   2   3   4..n
  * +---+---+---+---+---+---+---+---+
- * | A | B | F | T |    Payload    |
+ * | A | B | C | T |    Payload    |
  * +---+---+---+---+---+---+---+---+
  *
  * A - path element A
  * B - path element B
- * F - pathC
+ * C - path element C
  * T - type
  * Payload - up to 4 bytes payload
  */
