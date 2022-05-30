@@ -15,6 +15,19 @@ enum VanbusMsgType {
   Vb_Float,
 };
 
+/*   0   1   2   3   4..n
+ * +---+---+---+---+---+---+---+---+
+ * | A | B | F | T |    Payload    |
+ * +---+---+---+---+---+---+---+---+
+ *
+ * A - path element A
+ * B - path element B
+ * F - pathC
+ * T - type
+ * Payload - up to 4 bytes payload
+ */
+#define VANBUS_HEADER_LEN 4
+
 class VanbusMsg {
   public:
     VanbusMsg();
@@ -51,9 +64,9 @@ class VanbusMsg {
     int32_t getLong() { return (int32_t)getUnsignedLong(); };
     float getFloat();
 
-    void set(uint8_t b) { type = Vb_Byte; payload[0] = b; length = 5; };
+    void set(uint8_t b) { type = Vb_Byte; payload[0] = b; length = VANBUS_HEADER_LEN + 1; };
     void set(uint16_t s) {
-      type = Vb_UShort; payload[0] = s; payload[1] = s>>8; length = 6;
+      type = Vb_UShort; payload[0] = s; payload[1] = s>>8; length = VANBUS_HEADER_LEN + 2;
     };
     void set(uint32_t b) {
       type = Vb_ULong;
@@ -61,7 +74,7 @@ class VanbusMsg {
       payload[1] = b>>8;
       payload[2] = b>>16;
       payload[3] = b>>24;
-      length = 8;
+      length = VANBUS_HEADER_LEN + 4;
     };
     void set(int16_t s) { set((uint16_t)s); type = Vb_Short; };
     void set(int32_t s) { set((uint32_t)s); type = Vb_Long; };
@@ -75,19 +88,6 @@ class VanbusMsg {
   private:
     uint8_t length = 0;
 };
-
-/*   0   1   2   3   4..n
- * +---+---+---+---+---+---+---+---+
- * | A | B | F | T |    Payload    |
- * +---+---+---+---+---+---+---+---+
- *
- * A - path element A
- * B - path element B
- * F - pathC
- * T - type
- * Payload - up to 4 bytes payload
- */
-#define VANBUS_HEADER_LEN 4
 
 typedef void (*callbackFn)(VanbusMsg *);
 
