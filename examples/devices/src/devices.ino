@@ -100,7 +100,7 @@ void setup() {
   vanbus.receive(buf, 8);
 
   Serial.println(F("[ All lights brightness 90 ]"));
-  msg.path('l', 0, 'b');
+  msg.path('l', 0x00, 'b');
   msg.set(0x5A);
   msg.writeBytes(buf, 8);
   vanbus.receive(buf, 8);

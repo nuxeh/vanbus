@@ -1,0 +1,24 @@
+{
+  "name": "Vanbus",
+  "version": "0.1.0",
+  "description": "Embedded pub/sub protocol encoder and decoder",
+  "keywords": "serial, network, protocol, serialization, serde, encoder, decoder",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/nuxeh/vanbus.git"
+  },
+  "authors":
+  [
+    {
+      "name": "Ed Cragg",
+      "email": "ed.cragg@eipi.xyz",
+      "url": "https://eipi.xyz/"
+    }
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "dependencies": {},
+  "frameworks": "*",
+  "platforms": "*"
+}

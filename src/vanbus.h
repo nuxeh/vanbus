@@ -4,11 +4,11 @@
 
 enum VanbusMsgType {
   Vb_Byte = 0,
+  Vb_Float,
   Vb_Short,
   Vb_UShort,
   Vb_Long,
   Vb_ULong,
-  Vb_Float,
 };
 
 /*   0   1   2   3   4..n
