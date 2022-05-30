@@ -56,11 +56,12 @@ same message to all devices in the same group.
 
 ```c++
 uint8_t buf[8];
+VanbusMsg msg;
 
 // send all lights brightness 90 message
 msg.path('l', 0x00, 'b');
 msg.set(0x5A);
-msg.writeBytes(buf, 8);
+uint8_t l = msg.writeBytes(buf, 8);
 
-vanbus.receive(buf, 8);
+vanbus.receive(buf, l);
 ```
