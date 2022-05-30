@@ -110,7 +110,6 @@ class Vanbus {
   private:
     uint8_t n_subs = 0;
     VanbusSub subs[N];
-    VanbusMsg msg;
 };
 
 template <int N>
@@ -129,6 +128,7 @@ int Vanbus<N>::subscribe(callbackFn fn, uint8_t A, uint8_t B, uint8_t C) {
 
 template <int N>
 void Vanbus<N>::receive(uint8_t *bytes, uint8_t len) {
+  VanbusMsg msg;
   msg.parseFromBytes(bytes, len);
 
   // check all subs
