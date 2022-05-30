@@ -6,25 +6,13 @@
 #define VANBUS_MAX_SUBSCRIPTIONS 5
 #endif
 
-typedef uint32_t vb_fixed_t;
-#define FIXED_POINT_FRACTIONAL_BITS 8
-
 enum VanbusMsgType {
   Vb_Byte = 0,
   Vb_Short,
   Vb_UShort,
   Vb_Long,
   Vb_ULong,
-  Vb_Fixed,
-  Vb_Fixed_Neg,
   Vb_Float,
-};
-
-union vb_payload_t {
-   uint8_t b[4];
-   uint16_t us[2];
-   uint32_t ul;
-   float f;
 };
 
 class VanbusMsg {
