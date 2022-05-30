@@ -2,10 +2,6 @@
 
 #include <stdint.h>
 
-#ifndef VANBUS_MAX_SUBSCRIPTIONS
-#define VANBUS_MAX_SUBSCRIPTIONS 5
-#endif
-
 enum VanbusMsgType {
   Vb_Byte = 0,
   Vb_Short,
@@ -114,7 +110,7 @@ class Vanbus {
 
 template <int N>
 int Vanbus<N>::subscribe(callbackFn fn, uint8_t A, uint8_t B, uint8_t C) {
-  if (n_subs < VANBUS_MAX_SUBSCRIPTIONS) {
+  if (n_subs < N) {
     subs[n_subs].pathA = A;
     subs[n_subs].pathB = B;
     subs[n_subs].pathC = C;

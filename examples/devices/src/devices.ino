@@ -1,6 +1,6 @@
 #include <vanbus.h>
 
-Vanbus<8> vanbus;
+Vanbus<7> vanbus;
 
 // ceiling light callbacks
 void l_c_b(VanbusMsg *m) {
