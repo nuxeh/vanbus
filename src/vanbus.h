@@ -49,14 +49,6 @@ class VanbusMsg {
     int32_t getLong() { return (int32_t)getUnsignedLong(); };
     float getFloat();
 
-    uint8_t getPathA() { return pathA; };
-    uint8_t getPathB() { return pathB; };
-    uint8_t getPathC() { return pathC; };
-
-    void setPathA(uint8_t A) { pathA = A; };
-    void setPathB(uint8_t B) { pathB = B; };
-    void setPathC(uint8_t F) { pathC = F; };
-
     void set(uint8_t b) { type = Vb_Byte; payload[0] = b; length = 5; };
     void set(uint16_t s) {
       type = Vb_UShort; payload[0] = s; payload[1] = s>>8; length = 6;
@@ -73,12 +65,12 @@ class VanbusMsg {
     void set(int32_t s) { set((uint32_t)s); type = Vb_Long; };
     void set(float f);
 
-  private:
     uint8_t pathA = 0;            // 0
     uint8_t pathB = 0;            // 1
     uint8_t pathC = 0;            // 2
     VanbusMsgType type = Vb_Byte; // 3
     uint8_t payload[4] = {0};     // 4..(7)
+  private:
     uint8_t length = 0;
 };
 
@@ -139,9 +131,9 @@ void Vanbus<N>::receive(uint8_t *bytes, uint8_t len) {
 
   // check all subs
   for (uint8_t s=0; s<n_subs; s++) {
-    if (subs[s].pathA != 0 && subs[s].pathA != msg.getPathA()) continue;
-    if (subs[s].pathB != 0 && subs[s].pathB != msg.getPathB()) continue;
-    if (subs[s].pathC != 0 && subs[s].pathC != msg.getPathC()) continue;
+    if (msg.pathA != 0 && subs[s].pathA != msg.pathA) continue;
+    if (msg.pathB != 0 && subs[s].pathB != msg.pathB) continue;
+    if (msg.pathC != 0 && subs[s].pathC != msg.pathC) continue;
 
     // subscription matches, call callback
     subs[s].fn(&msg);
