@@ -15,7 +15,7 @@ Message payloads are typed, and can be:
 
 - Boolean
 - Byte
-- Float (32 bit IEEE 754)
+- Float (32-bit IEEE 754)
 - Short
 - Signed Short
 - Long
@@ -29,10 +29,18 @@ Messages are written to, and parsed from, a buffer of bytes, so transport can
 be done in any manner desired, though the intention is to work well with PJON,
 and generally packetised/framed transport protocols.
 
+Messages are processed as follows:
+
+```c++
+vanbus.receive(b, l); // b is a byte buffer, l is the length of the message
+```
+
 A device can subscribe to a topic/path, and dispatches callback functions on
 processing of relevant packets for further processing.
 
 ```c++
+#include <vanbus.h>
+
 Vanbus<2> vanbus; // template parameter is the number of callbacks to
                   // assign memory for
 
