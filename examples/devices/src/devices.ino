@@ -61,23 +61,36 @@ void setup() {
   vanbus.subscribe(l_d_s, 'l', 'd', 's');
 
   uint8_t buf[8];
+  VanbusMsg msg;
 
   Serial.println(F("[ Ceiling light on ]"));
-  VanbusMsg msg('l', 'c', 's');
+  msg.path('l', 'c', 's');
   msg.set(0x01);
   msg.writeBytes(buf, 8);
   vanbus.receive(buf, 8);
 
   Serial.println(F("[ Ceiling light brightness 127 ]"));
-  VanbusMsg msg2('l', 'c', 'b');
-  msg2.set(0x7F);
-  msg2.writeBytes(buf, 8);
+  msg.path('l', 'c', 'b');
+  msg.set(0x7F);
+  msg.writeBytes(buf, 8);
+  vanbus.receive(buf, 8);
+
+  Serial.println(F("[ Side light on ]"));
+  msg.path('l', 's', 's');
+  msg.set(0x01);
+  msg.writeBytes(buf, 8);
+  vanbus.receive(buf, 8);
+
+  Serial.println(F("[ Side light brightness 127 ]"));
+  msg.path('l', 's', 'b');
+  msg.set(0x7F);
+  msg.writeBytes(buf, 8);
   vanbus.receive(buf, 8);
 
   Serial.println(F("[ All lights brightness 90 ]"));
-  VanbusMsg msg3('l', 0, 'b');
-  msg3.set(0x5A);
-  msg3.writeBytes(buf, 8);
+  msg.path('l', 0, 'b');
+  msg.set(0x5A);
+  msg.writeBytes(buf, 8);
   vanbus.receive(buf, 8);
 }
 

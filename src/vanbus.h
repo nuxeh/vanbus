@@ -32,6 +32,12 @@ class VanbusMsg {
     VanbusMsgType getType() { return type; };
     void setType(VanbusMsgType T) { type = T; };
 
+    void path(uint8_t A, uint8_t B, uint8_t C) {
+      pathA = A;
+      pathB = B;
+      pathC = C;
+    };
+
     uint8_t getByte() { return payload[0]; };
     uint16_t getUnsignedShort() {
       uint16_t r = payload[0];
