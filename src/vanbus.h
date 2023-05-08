@@ -25,6 +25,7 @@ enum VanbusMsgType {
  * Payload - up to 4 bytes payload
  */
 #define VANBUS_HEADER_LEN 4
+#define VANBUS_MAX_MSG_LEN 8
 
 class VanbusMsg {
   public:
@@ -44,6 +45,8 @@ class VanbusMsg {
       pathB = B;
       pathC = C;
     };
+
+    int encode();
 
     bool getBit() { return type == Vb_Bool_True; };
     uint8_t getByte() { return payload[0]; };
@@ -85,6 +88,9 @@ class VanbusMsg {
     uint8_t pathC = 0;            // 2
     VanbusMsgType type = Vb_Byte; // 3
     uint8_t payload[4] = {0};     // 4..(7)
+#ifdef VANBUS_INTERNAL_BUFFER
+    uint8_t buffer[VANBUS_MAX_MSG_LEN];
+#endif
   private:
     uint8_t length = 0;
 };

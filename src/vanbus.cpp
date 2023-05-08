@@ -42,8 +42,16 @@ int VanbusMsg::writeBytes(uint8_t *bytes, uint8_t max) {
     bytes[i+VANBUS_HEADER_LEN] = payload[i];
     written++;
   }
+  // set remaining bytes in the buffer to zero
+  for (uint8_t i=written; i<max; i++) bytes[i] = 0;
   return written;
 }
+ 
+#ifdef VANBUS_INTERNAL_BUFFER
+int VanbusMsg::encode() {
+  return writeBytes(buffer, VANBUS_MAX_MSG_LEN);
+}
+#endif
 
 void VanbusMsg::set(float F) {
   uint32_t *long_ptr = (uint32_t*)&F;
