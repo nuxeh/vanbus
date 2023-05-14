@@ -60,7 +60,7 @@ void setup() {
 }
 ```
 
-Messages can be sent to paths which include a wildcard, 0x00, e.g. to send the
+Messages can be sent to paths which include a wildcard, '*', e.g. to send the
 same message to all devices in the same group.
 
 ```c++

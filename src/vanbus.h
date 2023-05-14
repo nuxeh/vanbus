@@ -139,9 +139,9 @@ void Vanbus<N>::receive(uint8_t *bytes, uint8_t len) {
 
   // check all subs
   for (uint8_t s=0; s<n_subs; s++) {
-    if (msg.pathA != 0 && subs[s].pathA != msg.pathA) continue;
-    if (msg.pathB != 0 && subs[s].pathB != msg.pathB) continue;
-    if (msg.pathC != 0 && subs[s].pathC != msg.pathC) continue;
+    if (msg.pathA != '*' && subs[s].pathA != msg.pathA) continue;
+    if (msg.pathB != '*' && subs[s].pathB != msg.pathB) continue;
+    if (msg.pathC != '*' && subs[s].pathC != msg.pathC) continue;
 
     // subscription matches, call callback
     subs[s].fn(&msg);
